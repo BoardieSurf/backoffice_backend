@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: bash -c 'alembic upgrade head && uvicorn api.main:app --host 0.0.0.0'
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgrespw@boardie-database:5432
+    depends_on:
+      boardie-database:
+        condition: service_healthy
+    restart: on-failure
+
+  boardie-database:
+    image: postgres:alpine3.17
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespw
+      POSTGRES_DB: boardie-database
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
