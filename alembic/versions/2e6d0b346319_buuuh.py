@@ -1,8 +1,8 @@
 """buuuh
 
-Revision ID: 55ce3ccd2902
+Revision ID: 2e6d0b346319
 Revises: 
-Create Date: 2023-04-05 19:26:17.772089
+Create Date: 2023-04-05 19:33:43.869362
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '55ce3ccd2902'
+revision = '2e6d0b346319'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -31,8 +31,7 @@ def upgrade() -> None:
     sa.Column('private_id', sa.Integer(), nullable=False),
     sa.Column('board_id', sa.Integer(), nullable=True),
     sa.Column('filename', sa.String(), nullable=False),
-    sa.PrimaryKeyConstraint('private_id'),
-    sa.UniqueConstraint('board_id')
+    sa.PrimaryKeyConstraint('private_id')
     )
     op.create_index(op.f('ix_board_image_private_id'), 'board_image', ['private_id'], unique=False)
     op.create_table('board_image_main',

@@ -74,7 +74,7 @@ class BoardImage(Base):
     __tablename__ = "board_image"
 
     private_id = Column(Integer, primary_key=True, index=True)
-    board_id = Column(Integer, unique=True)
+    board_id = Column(Integer, unique=False)
     filename = Column(String, nullable=False)
 
 
