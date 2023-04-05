@@ -13,7 +13,8 @@ from api.services.rental_business_service import (
     set_main_rental_business_info_image_by_id,
     upload_rental_business_info_image,
 )
-from api.utils.api_utils import ensure_file_is_image
+
+# from api.utils.api_utils import ensure_file_is_image
 
 router = APIRouter()
 
