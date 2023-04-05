@@ -2,6 +2,9 @@ from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession as AsyncDBSession
 
 from api.core.database import get_db
+from api.routers.backoffice.backoffice_board.image import (
+    router as backoffice_board_image_router,
+)
 from api.schemas.schemas import (
     BoardsResponse,
     CreateBoardResponse,
@@ -20,7 +23,14 @@ from api.services.board_service import (
     update_board_of_rental_business_by_id,
 )
 
+BACKOFFICE_USER_INFO_IMAGE_ROUTER_PREFIX = "/{board_id}/image"
+
 router = APIRouter()
+
+router.include_router(
+    backoffice_board_image_router,
+    prefix=BACKOFFICE_USER_INFO_IMAGE_ROUTER_PREFIX,
+)
 
 
 @router.get(

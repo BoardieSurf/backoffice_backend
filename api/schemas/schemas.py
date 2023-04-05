@@ -78,10 +78,10 @@ class BoardInstance(BaseModel):
     # images_urls: list[str]
 
 
-class BoundingBoxVelocityMeasurementInstance(BaseModel):
-    velocity_measured: float
-    created_at: datetime
+class BoardImageInstance(BaseModel):
     private_id: int
+    board_id: int
+    filename: str
 
 
 # Response Schemas
@@ -110,11 +110,14 @@ class DeleteBoardResponse(BaseResponseDataSchema):
     code = 200
 
 
-class ManyBoundingBoxVelocityMeasurementsResponse(BaseResponseDataSchema):
-    data: list[BoundingBoxVelocityMeasurementInstance]
+class BackofficeUserBoardImagesResponse(BaseResponseDataSchema):
+    code = 200
+    data: list[BoardImageInstance]
+
+
+class BackofficeUserBoardImageUploadResponse(BaseResponseDataSchema):
     code = 200
 
 
-class SingleBoundingBoxVelocityMeasurementResponse(BaseResponseDataSchema):
-    data: BoundingBoxVelocityMeasurementInstance
+class SetBoardImageAsMainResponse(BaseResponseDataSchema):
     code = 200

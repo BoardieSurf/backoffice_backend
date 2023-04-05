@@ -5,10 +5,12 @@ from api.core.database import get_db
 from api.schemas.rental_business_schemas import (
     AllBackofficeUserInfoImageResponse,
     BackofficeUserInfoImageUploadResponse,
+    SetBackofficeUserInfoImageAsMainResponse,
 )
 from api.schemas.schemas import JWTData
 from api.services.rental_business_service import (
     get_all_rental_business_info_images,
+    set_main_rental_business_info_image_by_id,
     upload_rental_business_info_image,
 )
 from api.utils.api_utils import ensure_file_is_image
@@ -23,7 +25,7 @@ router = APIRouter()
     tags=[],
     summary="Get all your Rental Business Info images",
 )
-async def upload_image_file_of_rental_business_endpoint(
+async def get_images_of_own_rental_business_endpoint(
     request: Request,
     db: AsyncDBSession = Depends(get_db),
 ):
@@ -38,7 +40,7 @@ async def upload_image_file_of_rental_business_endpoint(
 
 @router.get(
     "/{image_id}/set_as_main",
-    response_model=AllBackofficeUserInfoImageResponse,
+    response_model=SetBackofficeUserInfoImageAsMainResponse,
     response_model_exclude_none=True,
     tags=[],
     summary="Set Image as main image of Rental Business Info",
@@ -50,11 +52,9 @@ async def set_image_as_main_rental_business_info_endpoint(
 ):
     jwt_data: JWTData = request.state.jwt_data
 
-    rental_business_info_images = await set_main_rental_business_info_image_by_id(
-        db, jwt_data.user_id, image_id
-    )
+    await set_main_rental_business_info_image_by_id(db, jwt_data.user_id, image_id)
 
-    return AllBackofficeUserInfoImageResponse(data=rental_business_info_images)
+    return SetBackofficeUserInfoImageAsMainResponse()
 
 
 @router.post(
@@ -71,7 +71,7 @@ async def upload_image_file_of_rental_business_endpoint(
 ):
     jwt_data: JWTData = request.state.jwt_data
 
-    ensure_file_is_image(file)
+    # ensure_file_is_image(file)
 
     await upload_rental_business_info_image(db, file, jwt_data.user_id)
 

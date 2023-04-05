@@ -1,6 +1,8 @@
+import json
+
 from sqlalchemy import literal_column, select, update
 from sqlalchemy.ext.asyncio import AsyncSession as AsyncDBSession
-import json
+
 from api.core.database import execute_db_statement, handle_no_data
 from api.models import (
     RentalBusinessRegisterAccountInvite,
@@ -61,7 +63,7 @@ async def get_register_invite(
     statement = (
         select(RentalBusinessRegisterAccountInvite)
         .where(RentalBusinessRegisterAccountInvite.token == register_token)
-        .where(RentalBusinessRegisterAccountInvite.used_by == None)
+        .where(RentalBusinessRegisterAccountInvite.used_by == None)  # noqa: E711
     )
 
     existing_data = await execute_db_statement(db, statement, __name__)
@@ -79,7 +81,7 @@ async def update_register_invite_with_user_id(
     statement = (
         update(RentalBusinessRegisterAccountInvite)
         .where(RentalBusinessRegisterAccountInvite.token == register_token)
-        .where(RentalBusinessRegisterAccountInvite.used_by == None)
+        .where(RentalBusinessRegisterAccountInvite.used_by == None)  # noqa: E711
         .values(
             {RentalBusinessRegisterAccountInvite.used_by.key: rental_business_user_id},
         )
@@ -194,7 +196,7 @@ async def get_rental_business_info_image_main_from_db(
     )
 
     existing_data = await execute_db_statement(db, statement, __name__)
-    results: list[RentalBusinessUserInfoImage] = existing_data.scalars().all()
+    results: list[RentalBusinessUserInfoImageMain] = existing_data.scalars().all()
 
     assert len(results) == 1
 

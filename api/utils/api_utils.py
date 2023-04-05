@@ -1,6 +1,4 @@
-from fastapi import HTTPException
-
-from fastapi import UploadFile
+from fastapi import HTTPException, UploadFile
 
 
 def ensure_file_is_image(file: UploadFile) -> None:

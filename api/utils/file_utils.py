@@ -4,8 +4,8 @@ from api.core.config import settings
 from api.utils.constants import DEPLOY_ENVIRONMENT_LOCAL
 
 
-def generate_file_name(file_type: str) -> str:
-    file_extension = file_type.split("/")[-1]
+def generate_file_name(file_name: str) -> str:
+    file_extension = file_name.split(".")[-1]
     file_name = f"{uuid.uuid4()}.{file_extension}"
     return file_name
 

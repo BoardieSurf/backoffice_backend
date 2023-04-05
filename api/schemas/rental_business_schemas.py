@@ -26,6 +26,7 @@ class RentalBusinessUserInfoInstance(BaseRentalBusinessUserInfoInstance):
 
 
 class RentalBusinessUserInfoImageInstance(BaseModel):
+    private_id: int
     filename: str
     is_main: bool = False
 
@@ -45,6 +46,10 @@ class RegisterRentalBusinessUserAccountInstance(
 
 
 # Responses
+
+
+class SetBackofficeUserInfoImageAsMainResponse(BaseResponseDataSchema):
+    code = 200
 
 
 class AllBackofficeUserInfoImageResponse(BaseResponseDataSchema):

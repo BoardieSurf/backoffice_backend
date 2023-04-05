@@ -1,5 +1,6 @@
-from sqlalchemy.ext.asyncio import AsyncSession as AsyncDBSession
 from fastapi import HTTPException, UploadFile, status
+from sqlalchemy.ext.asyncio import AsyncSession as AsyncDBSession
+
 from api.models import RentalBusinessUserInfo
 from api.repos.rental_business_repo import (
     create_rental_business_info_image_main_on_db,
@@ -11,6 +12,7 @@ from api.repos.rental_business_repo import (
     get_rental_business_info_image_main_from_db,
     get_rental_business_info_images_from_db,
     select_info_of_rental_business_by_id,
+    set_rental_business_info_image_as_main_on_db,
     update_info_of_rental_business_by_id,
     update_register_invite_with_user_id,
 )
@@ -100,9 +102,7 @@ async def set_main_rental_business_info_image_by_id(
     await get_rental_business_info_image_by_id_from_db(db, rental_business_id, image_id)
 
     # set that image as main
-    main_image_db_obj = await get_rental_business_info_image_main_from_db(
-        db, rental_business_id
-    )
+    await set_rental_business_info_image_as_main_on_db(db, rental_business_id, image_id)
 
     return None
 
@@ -113,6 +113,8 @@ async def get_all_rental_business_info_images(
     image_db_objs = await get_rental_business_info_images_from_db(
         db, rental_business_id
     )
+    if not image_db_objs:
+        return []
 
     main_image_db_obj = await get_rental_business_info_image_main_from_db(
         db, rental_business_id
@@ -120,7 +122,9 @@ async def get_all_rental_business_info_images(
 
     return [
         RentalBusinessUserInfoImageInstance(
-            filename=x.filename, is_main=x.private_id == main_image_db_obj.image_id
+            private_id=x.private_id,
+            filename=x.filename,
+            is_main=x.private_id == main_image_db_obj.image_id,
         )
         for x in image_db_objs
     ]
@@ -141,7 +145,7 @@ async def upload_rental_business_info_image(
 
     # upload image
 
-    file_name = generate_file_name(file.content_type)
+    file_name = generate_file_name(file.filename)
 
     await upload_file_to_bucket(await file.read(), file_name)
 
@@ -154,6 +158,7 @@ async def upload_rental_business_info_image(
     # if its the 1st image uploaded, set it as main
 
     if len(current_images_bd_objs) == 0:
+        assert isinstance(new_rental_business_user_info_image_obj.private_id, int)
         await create_rental_business_info_image_main_on_db(
             db, rental_business_id, new_rental_business_user_info_image_obj.private_id
         )

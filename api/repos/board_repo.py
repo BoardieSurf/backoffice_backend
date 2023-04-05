@@ -1,10 +1,11 @@
 import json
+
 from sqlalchemy import delete, literal_column, select, update
 from sqlalchemy.ext.asyncio import AsyncSession as AsyncDBSession
 
 from api.core.database import execute_db_statement, handle_no_data
 from api.core.loggr import loggr
-from api.models import Board
+from api.models import Board, BoardImage
 from api.schemas.schemas import CreateSingleBoardInstance, UpdateSingleBoardInstance
 
 logger = loggr.get_logger(__name__)
@@ -102,3 +103,14 @@ async def create_board_obj(
     await db.commit()
 
     return db_objs
+
+
+async def get_all_images_of_board_by_id_from_db(
+    db: AsyncDBSession, board_id: int
+) -> list[BoardImage]:
+    statement = select(BoardImage).where(BoardImage.board_id == board_id)
+
+    existing_data = await execute_db_statement(db, statement, __name__)
+    results: list[BoardImage] = existing_data.scalars().all()
+
+    return results

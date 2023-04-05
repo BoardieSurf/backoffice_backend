@@ -20,4 +20,4 @@
 
 ## How to run everything with docker  
 
-docker-compose up
+- docker-compose up

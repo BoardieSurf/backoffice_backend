@@ -11,7 +11,6 @@ SUPERUSER_ROUTER_PREFIX = "/superuser"
 router.include_router(
     backoffice_router,
     prefix=BACKOFFICE_ROUTER_PREFIX,
-    tags=["backoffice"],
 )
 
 router.include_router(

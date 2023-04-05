@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -47,7 +47,7 @@ class RentalBusinessUserInfoImage(Base):
     __tablename__ = "rental_business_user_info_image"
 
     private_id = Column(Integer, primary_key=True, index=True)
-    rental_business_user_id = Column(Integer, unique=True)
+    rental_business_user_id = Column(Integer)
     filename = Column(String, nullable=False)
 
 
@@ -68,3 +68,19 @@ class Board(Base):
     category = Column(String, nullable=False)
     description = Column(String, nullable=False)
     rental_business_user_id = Column(Integer, nullable=False)
+
+
+class BoardImage(Base):
+    __tablename__ = "board_image"
+
+    private_id = Column(Integer, primary_key=True, index=True)
+    board_id = Column(Integer, unique=True)
+    filename = Column(String, nullable=False)
+
+
+class BoardImageMain(Base):
+    __tablename__ = "board_image_main"
+
+    private_id = Column(Integer, primary_key=True, index=True)
+    image_id = Column(Integer, unique=True)
+    board_id = Column(Integer, unique=True)

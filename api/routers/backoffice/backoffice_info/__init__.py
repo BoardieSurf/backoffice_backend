@@ -2,6 +2,9 @@ from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession as AsyncDBSession
 
 from api.core.database import get_db
+from api.routers.backoffice.backoffice_info.image import (
+    router as backoffice_info_image_router,
+)
 from api.schemas.rental_business_schemas import (
     BackofficeUserInfoResponse,
     UpdateBackofficeUserInfoResponse,
@@ -11,9 +14,6 @@ from api.schemas.schemas import JWTData
 from api.services.rental_business_service import (
     get_info_of_own_rental_business,
     update_info_of_own_rental_business,
-)
-from api.routers.backoffice.backoffice_info.image import (
-    router as backoffice_info_image_router,
 )
 
 BACKOFFICE_USER_INFO_IMAGE_ROUTER_PREFIX = "/image"

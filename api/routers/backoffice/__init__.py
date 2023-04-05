@@ -18,20 +18,24 @@ router = APIRouter()
 router.include_router(
     login_router,
     prefix=LOGIN_ROUTER_PREFIX,
+    tags=["backoffice_auth"],
 )
 router.include_router(
     register_router,
     prefix=REGISTER_ROUTER_PREFIX,
+    tags=["backoffice_auth"],
 )
 
 router.include_router(
     rental_business_user_info_router,
     prefix=BACKOFFICE_USER_INFO_ROUTER_PREFIX,
     dependencies=[Depends(verify_token), Depends(check_if_is_rental_business_user)],
+    tags=["backoffice_rental_business_info"],
 )
 
 router.include_router(
     backoffice_board_router,
     prefix=BACKOFFICE_BOARD_ROUTER_PREFIX,
     dependencies=[Depends(verify_token), Depends(check_if_is_rental_business_user)],
+    tags=["backoffice_rental_business_boards"],
 )
