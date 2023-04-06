@@ -1,4 +1,4 @@
-from sqlalchemy import literal_column, update
+from sqlalchemy import literal_column, select, update
 from sqlalchemy.ext.asyncio import AsyncSession as AsyncDBSession
 
 from api.core.database import execute_db_statement, handle_no_data
@@ -48,3 +48,17 @@ async def set_board_image_as_main_on_db(
     assert len(results) == 1
 
     return None
+
+
+async def get_board_image_main_from_db(
+    db: AsyncDBSession,
+    board_id: int,
+) -> BoardImageMain:
+    statement = select(BoardImageMain).where(BoardImageMain.board_id == board_id)
+
+    existing_data = await execute_db_statement(db, statement, __name__)
+    results: list[BoardImageMain] = existing_data.scalars().all()
+
+    assert len(results) == 1
+
+    return results[0]

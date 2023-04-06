@@ -13,6 +13,7 @@ from api.services.rental_business_service import (
     set_main_rental_business_info_image_by_id,
     upload_rental_business_info_image,
 )
+from api.utils.api_utils import ensure_file_is_image
 
 # from api.utils.api_utils import ensure_file_is_image
 
@@ -72,7 +73,7 @@ async def upload_image_file_of_rental_business_endpoint(
 ):
     jwt_data: JWTData = request.state.jwt_data
 
-    # ensure_file_is_image(file)
+    ensure_file_is_image(file)
 
     await upload_rental_business_info_image(db, file, jwt_data.user_id)
 

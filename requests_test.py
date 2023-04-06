@@ -81,3 +81,119 @@ r13 = session.get("http://localhost:8000/backoffice/info/image")
 assert r13.status_code == 200
 assert len(r13.json()["data"]) == 2
 assert r13.json()["data"][1]["is_main"] is True
+
+r14 = session.get("http://localhost:8000/backoffice/board/")
+assert r14.status_code == 200
+assert len(r14.json()["data"]) == 0
+
+r15 = session.post(
+    "http://localhost:8000/backoffice/board/",
+    json={
+        "title": "Board 1",
+        "description": "description of board 1",
+        "category": "longboard",
+        "replicas": 1,
+    },
+)
+assert r15.status_code == 200
+
+r16 = session.get("http://localhost:8000/backoffice/board/")
+assert r16.status_code == 200
+assert len(r16.json()["data"]) == 1
+
+r17 = session.post(
+    "http://localhost:8000/backoffice/board/",
+    json={
+        "title": "Foam Board 1",
+        "description": "description of foam board 1",
+        "category": "foamboard",
+        "replicas": 2,
+    },
+)
+assert r17.status_code == 200
+
+r18 = session.get("http://localhost:8000/backoffice/board/")
+assert r18.status_code == 200
+assert len(r18.json()["data"]) == 3
+board_id = r18.json()["data"][2]["private_id"]
+
+r19 = session.delete(f"http://localhost:8000/backoffice/board/{board_id}")
+assert r19.status_code == 200
+
+r20 = session.get("http://localhost:8000/backoffice/board/")
+assert r20.status_code == 200
+assert len(r20.json()["data"]) == 2
+
+
+r21 = session.get("http://localhost:8000/backoffice/board/")
+assert r21.status_code == 200
+assert len(r21.json()["data"]) == 2
+board_id = r21.json()["data"][0]["private_id"]
+
+r22 = session.put(
+    f"http://localhost:8000/backoffice/board/{board_id}",
+    json={
+        "title": "MODIFIED NEW",
+        "description": "MODIFIED NEW DESC",
+        "category": "gun",
+    },
+)
+assert r22.status_code == 200
+
+r23 = session.get("http://localhost:8000/backoffice/board/")
+assert r23.status_code == 200
+board_obj = None
+for board in r23.json()["data"]:
+    if board["private_id"] == board_id:
+        board_obj = board
+        break
+assert board_obj
+assert board_obj["title"] == "MODIFIED NEW"
+
+
+r24 = session.get("http://localhost:8000/backoffice/board/")
+assert r24.status_code == 200
+assert len(r24.json()["data"]) == 2
+board_id = r24.json()["data"][0]["private_id"]
+
+r25 = session.get(f"http://localhost:8000/backoffice/board/{board_id}/image")
+assert r25.status_code == 200
+assert len(r25.json()["data"]) == 0
+
+files = {"file": open("test_image.jpeg", "rb")}
+r26 = session.post(
+    f"http://localhost:8000/backoffice/board/{board_id}/image", files=files
+)
+assert r26.status_code == 200
+
+r27 = session.get(f"http://localhost:8000/backoffice/board/{board_id}/image")
+assert r27.status_code == 200
+assert len(r27.json()["data"]) == 1
+
+r28 = session.get(f"http://localhost:8000/backoffice/board/{board_id}/image")
+assert r28.status_code == 200
+print(r28.json()["data"][0])
+assert r28.json()["data"][0]["is_main"] is True
+
+files = {"file": open("test_image.jpeg", "rb")}
+r29 = session.post(
+    f"http://localhost:8000/backoffice/board/{board_id}/image", files=files
+)
+assert r29.status_code == 200
+
+
+r30 = session.get(f"http://localhost:8000/backoffice/board/{board_id}/image")
+assert r30.status_code == 200
+assert len(r30.json()["data"]) == 2
+image_id = [x for x in r30.json()["data"] if x["is_main"] is False][0]["private_id"]
+
+r31 = session.get(
+    f"http://localhost:8000/backoffice/board/{board_id}/image/{image_id}/set_as_main"
+)
+assert r31.status_code == 200
+
+r32 = session.get(f"http://localhost:8000/backoffice/board/{board_id}/image")
+assert r32.status_code == 200
+assert [x for x in r32.json()["data"] if x["is_main"] is True][0][
+    "private_id"
+] == image_id

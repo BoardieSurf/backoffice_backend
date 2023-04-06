@@ -82,6 +82,7 @@ class BoardImageInstance(BaseModel):
     private_id: int
     board_id: int
     filename: str
+    is_main: bool = False
 
 
 # Response Schemas

@@ -5,6 +5,7 @@ from api.models import BoardImage
 from api.repos.board_image_repo import (
     create_board_image_main_on_db,
     create_board_image_on_db,
+    get_board_image_main_from_db,
     set_board_image_as_main_on_db,
 )
 from api.repos.board_repo import (
@@ -18,9 +19,12 @@ from api.utils.file_utils import generate_file_name, upload_file_to_bucket
 
 
 def board_image_db_to_schema_converter(
-    board_image_db_obj: BoardImage,
+    board_image_db_obj: BoardImage, is_main: bool = False
 ) -> BoardImageInstance:
-    return BoardImageInstance(**board_image_db_obj.__dict__)
+    board_instance_obj = BoardImageInstance(**board_image_db_obj.__dict__)
+    board_instance_obj.is_main = is_main
+
+    return board_instance_obj
 
 
 async def get_all_images_of_rental_business_own_board_by_id(
@@ -37,7 +41,20 @@ async def get_all_images_of_board_by_id(
     db: AsyncDBSession, board_id: int
 ) -> list[BoardImageInstance]:
     board_image_db_objs = await get_all_images_of_board_by_id_from_db(db, board_id)
-    return [board_image_db_to_schema_converter(x) for x in board_image_db_objs]
+
+    if not board_image_db_objs:
+        return []
+
+    # get main image
+
+    main_board_image_obj = await get_board_image_main_from_db(db, board_id)
+
+    return [
+        board_image_db_to_schema_converter(
+            x, is_main=x.private_id == main_board_image_obj.image_id
+        )
+        for x in board_image_db_objs
+    ]
 
 
 async def upload_board_image(
@@ -63,9 +80,7 @@ async def upload_board_image(
 
     # create image db obj
 
-    new_board_image_obj = await create_board_image_on_db(
-        db, rental_business_id, file_name
-    )
+    new_board_image_obj = await create_board_image_on_db(db, board_id, file_name)
 
     # if its the 1st image uploaded, set it as main
 

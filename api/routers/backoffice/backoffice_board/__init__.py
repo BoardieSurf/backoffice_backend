@@ -88,7 +88,7 @@ async def delete_board_of_own_rental_business_by_id_endpoint(
 
 @router.put(
     "/{board_id}",
-    response_model=UpdateSingleBoardInstance,
+    response_model=UpdateBoardResponse,
     response_model_exclude_none=True,
     tags=[],
     summary="Update a Board of your own Rental Business by the ID",
