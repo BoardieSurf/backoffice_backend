@@ -96,7 +96,7 @@ async def upload_board_image(
 async def set_board_main_image_by_id(
     db: AsyncDBSession, rental_business_id: int, board_id: int, image_id: int
 ) -> None:
-    # check if the image exists
+    # check if the board exists
     await get_board_of_rental_business_by_id(db, rental_business_id, board_id)
 
     # set that image as main
