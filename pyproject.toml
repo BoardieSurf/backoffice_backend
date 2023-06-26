@@ -36,5 +36,4 @@ check_fmt = "black --check ./api"
 check_imports = "isort --check ./api"
 check_lint = "flake8 ./api"
 check_types = "mypy ./api"
-check_all = ["check_fmt", "check_imports", "check_lint", "check_types"]
-check_and_test = ["check_fmt", "check_imports", "check_lint", "check_types", "test"]
+check_all = ["check_fmt", "check_imports", "check_lint", "check_types", "test"]
