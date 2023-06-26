@@ -35,6 +35,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m poetry install
+    
+    - name: Create the .env file
+      run: |
+        cp env.example .env
 
     - name: Run Checks
       run: |
