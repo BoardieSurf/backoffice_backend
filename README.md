@@ -29,3 +29,7 @@ Access the URL `http://0.0.0.0:8000/docs`
 ## How to run everything with docker  
 
 - docker-compose up
+
+
+Good luck!!!!
+
